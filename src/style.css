@@ -1,0 +1,33 @@
+.container {
+    background-color: ghostwhite;
+}
+.col-xs-1 {
+    padding-right: 0.05%;
+    padding-left: 0.05%;
+    width: 14.28%;
+}
+.panel {
+    border-radius: 0;
+    margin-bottom: 0;
+    padding-top: 100%;
+}
+.panel>.panel-heading, .panel>.panel-body {
+    position: absolute;
+    padding: 0;
+    display: flex;
+}
+.panel>.panel-heading {
+    top: 1px;
+    width: 98%;
+    height: 30%;
+}
+.panel>.panel-body {
+    top: 30%;
+    width: 98%;
+    height: 70%;
+}
+.pnl-text {
+    margin: auto;
+    line-height: 15px;
+    text-align: center;
+}
