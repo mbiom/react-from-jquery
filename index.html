@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Week schedule</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.js"></script>
+        
+        <style type="text/css">
+            .col-xs-1 {
+                padding-right: 0.05%;
+                padding-left: 0.05%;
+                width: 14.28%;
+            }
+            .panel {
+                border-radius: 0;
+                margin-bottom: 0;
+                padding-top: 100%;
+            }
+            .panel>.panel-heading, .panel>.panel-body {
+                position: absolute;
+                padding: 0;
+                display: flex;
+            }
+            .panel>.panel-heading {
+                top: 1px;
+                width: 98%;
+                height: 30%;
+            }
+            .panel>.panel-body {
+                top: 30%;
+                width: 98%;
+                height: 70%;
+            }
+            .pnl-text {
+                margin: auto;
+                line-height: 15px;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+      
+    <div class="container" style="background-color: ghostwhite;">
+        <hr>
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8">
+                <p>Add button on click of button call schedule.php and pass current date in YYYY-MM-DD format as GET paramter 'date'. </p>
+                <p>Parse JSON response and create weekly calendar for each square showing date, different background color depneding on whether this day status is active, and description.
+                If status is active description should be active link if not plain text</p>
+                <p>Calendar should be shown as horizontal line of boxes which resize on different screen sizes and resolutions</p>
+            </div>
+            
+        </div>
+        <hr>
+        <div>
+            <button id='btn' class="btn btn-primary">Calendar</button>
+        </div>
+
+        <hr>
+
+        <div class="row" id="divCal">
+        </div>
+    </div>
+
+    </body>
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            $("#btn").click(function(){
+
+                // jquery ajax call to php file
+                // pass current date in a format
+                // receive calendar data from php
+                $.ajax({
+                    type: "GET",
+                    url: "schedule.php?date=" + moment().format('YYYY-MM-DD'),
+                    success: function(data) {
+                        data = JSON.parse(data);
+                        console.log(data);
+                        showCalendar(data);
+                    },
+                    error: function(e) {
+                        console.log(e);
+                    }
+
+                });
+
+            });
+
+        });
+
+        function showCalendar(data) {
+            $("#divCal").html("");
+
+            for (var i = 0; i < data.length; i++) {
+                // set color by status
+                var clsColor = data[i]['status']['active'] == 1 ? "panel-info" : "panel-danger";
+                // format date string
+                var dateObj = moment(data[i]['date']);
+                var strDate = dateObj.format('MMMM D, YYYY') + "<br>" + dateObj.format('dddd');
+                // add anchor if status='active'
+                var desc = data[i]['status']['description'];
+                var htmDesc = data[i]['status']['active'] == 1 ? "<a href='#'>" + desc + "</a>" : desc;
+
+                // append a day panel to horizontal calendar
+                var htmPanel = 
+                    "<div class='col-xs-1'>" +
+                        "<div class='panel " + clsColor + "'>" +
+                            "<div class='panel-heading'><div class='pnl-text'>" + strDate + "</div></div>" +
+                            "<div class='panel-body'><div class='pnl-text'>" + htmDesc + "</div></div>" +
+                        "</div>" +
+                    "</div>";
+                $("#divCal").append(htmPanel);
+            }
+        }
+    </script>
+</html>
